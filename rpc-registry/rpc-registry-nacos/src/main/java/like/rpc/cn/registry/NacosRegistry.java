@@ -11,6 +11,7 @@ import like.rpc.cn.core.util.IpUtil;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,6 +27,8 @@ public class NacosRegistry implements Registry {
     private final String dataId;
     /** 分组 */
     private final String group;
+
+    // nacos client
     private final ConfigService configService;
     private final NamingService namingService;
 
@@ -79,5 +82,19 @@ public class NacosRegistry implements Registry {
     @Override
     public Mono<Void> watch(final RegistryEventCallBack callBack) {
         return null;
+    }
+
+    @Override
+    public void shutDown() {
+        try {
+            if (!Objects.isNull(namingService)) {
+                this.namingService.shutDown();
+            }
+            if (!Objects.isNull(configService)) {
+                this.configService.shutDown();
+            }
+        } catch (NacosException e) {
+            e.printStackTrace();
+        }
     }
 }

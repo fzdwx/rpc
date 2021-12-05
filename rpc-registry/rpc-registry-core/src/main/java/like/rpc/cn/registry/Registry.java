@@ -36,4 +36,6 @@ public interface Registry {
     Flux<EndPoint> find(String serviceName);
 
     Mono<Void> watch(RegistryEventCallBack callBack);
+
+    void shutDown();
 }
