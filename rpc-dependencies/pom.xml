@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>like.rpc.cn</groupId>
+    <artifactId>rpc-dependencies</artifactId>
+    <version>0.1</version>
+
+    <properties>
+        <lombok.version>1.18.20</lombok.version>
+        <hutool.version>5.7.16</hutool.version>
+        <snakeyaml.version>1.29</snakeyaml.version>
+        <rpc.version>0.1</rpc.version>
+        <nacos-client.version>2.0.3</nacos-client.version>
+        <slf4j-api.version>2.0.0-alpha1</slf4j-api.version>
+        <logback.version>1.2.7</logback.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>like.cn.rpc</groupId>
+                <artifactId>rpc-core</artifactId>
+                <version>${rpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>like.rpc.cn</groupId>
+                <artifactId>rpc-registry</artifactId>
+                <version>${rpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>like.rpc.cn</groupId>
+                <artifactId>rpc-registry-core</artifactId>
+                <version>${rpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>like.rpc.cn</groupId>
+                <artifactId>rpc-registry-nacos</artifactId>
+                <version>${rpc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-bom</artifactId>
+                <version>2020.0.13</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos-client.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
