@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +67,6 @@ public class DefaultConnectManager implements ConnectManager, RegistryEventCallB
         });
     }
 
-    private ChannelWrapper connect(final EndPoint endPoint) {
-        return doConnect(endPoint.getHost(), endPoint.getPort());
-    }
-
     @SneakyThrows
     private ChannelWrapper doConnect(final String host, final int port) {
         Bootstrap b = new Bootstrap()
@@ -82,13 +79,33 @@ public class DefaultConnectManager implements ConnectManager, RegistryEventCallB
 
     @Override
     public void execute(final RegistryEvent event) {
+        final String serviceName = event.getServiceName();
+        final String host = event.getHost();
+        final int port = event.getPort();
         if (event.getRegistryEventType() == RegistryEventType.DELETE) {
-
+            Iterator<ChannelWrapper> iterator = channelsByService.get(serviceName).iterator();
+            while (iterator.hasNext()) {
+                EndPoint endpoint = iterator.next().getEndpoint();
+                if (endpoint.getHost().equals(host) && (endpoint.getPort() == port)) {
+                    iterator.remove();
+                }
+            }
         }
+        if (event.getRegistryEventType() == RegistryEventType.PUT) {
+            try {
+                channelsByService.get(serviceName).add(doConnect(host,port));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    private ChannelWrapper connect(final EndPoint endPoint) {
+        return doConnect(endPoint.getHost(), endPoint.getPort());
     }
 
     private static class ChannelWrapper {
+
 
         private EndPoint endpoint;
         private Channel channel;

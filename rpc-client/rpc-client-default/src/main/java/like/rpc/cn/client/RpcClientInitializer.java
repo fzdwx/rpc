@@ -10,6 +10,7 @@ import like.rpc.cn.protocol.model.rpc.RpcRequest;
 import like.rpc.cn.protocol.model.rpc.RpcResponse;
 
 public class RpcClientInitializer extends ChannelInitializer<SocketChannel>{
+
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();

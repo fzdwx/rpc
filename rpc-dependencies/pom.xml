@@ -18,6 +18,7 @@
         <logback.version>1.2.7</logback.version>
         <protostuff.version>1.5.2</protostuff.version>
         <objenesis.version>2.6</objenesis.version>
+        <byte-buddy.version>1.7.9</byte-buddy.version>
     </properties>
 
     <dependencyManagement>
@@ -85,6 +86,11 @@
                 <groupId>org.objenesis</groupId>
                 <artifactId>objenesis</artifactId>
                 <version>${objenesis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byte-buddy.version}</version>
             </dependency>
 
             <dependency>

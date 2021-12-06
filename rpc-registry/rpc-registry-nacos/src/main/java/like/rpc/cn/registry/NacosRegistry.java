@@ -10,6 +10,7 @@ import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import like.rpc.cn.core.util.EndPoint;
 import like.rpc.cn.core.util.IpUtil;
+import lombok.SneakyThrows;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -87,9 +88,13 @@ public class NacosRegistry implements Registry {
         return null;
     }
 
+    @SneakyThrows
     @Override
     public Flux<EndPoint> find(final String serviceName) {
-        return null;
+        return Flux.just(namingService.selectInstances(serviceName, true).toArray(Instance[]::new))
+                .handle((instance, synchronousSink) -> {
+                    synchronousSink.next(new EndPoint(instance.getIp(), instance.getPort()));
+                });
     }
 
     @Override

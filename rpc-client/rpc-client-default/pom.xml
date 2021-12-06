@@ -33,6 +33,10 @@
             <groupId>like.rpc.cn</groupId>
             <artifactId>rpc-client-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

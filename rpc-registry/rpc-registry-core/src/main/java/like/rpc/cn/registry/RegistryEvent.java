@@ -11,17 +11,17 @@ import lombok.Getter;
 @Data
 public class RegistryEvent {
 
-    private String serverName;
+    private String serviceName;
     private String host;
     private int port;
 
     @Getter
     private RegistryEventType registryEventType = RegistryEventType.UNRECOGNIZED;
 
-    private RegistryEvent(final String host, final int port, final String serverName, final RegistryEventType registryEventType) {
+    private RegistryEvent(final String host, final int port, final String serviceName, final RegistryEventType registryEventType) {
         this.host = host;
         this.port = port;
-        this.serverName = serverName;
+        this.serviceName = serviceName;
         this.registryEventType = registryEventType;
     }
 
@@ -39,7 +39,7 @@ public class RegistryEvent {
     }
 
     public RegistryEvent serverName(final String serverName) {
-        this.serverName = serverName;
+        this.serviceName = serverName;
         return this;
     }
     public RegistryEvent host(final String host) {
