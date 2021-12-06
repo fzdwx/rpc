@@ -7,7 +7,7 @@ package like.rpc.cn.core.exception;
  */
 public class ExceptionFactory {
 
-    public static RpcException rpc() {
-        return new RpcException();
+    public static RpcException rpc(final String s) {
+        return new RpcException(s);
     }
 }

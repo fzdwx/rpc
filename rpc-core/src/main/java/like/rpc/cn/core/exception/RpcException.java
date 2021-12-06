@@ -7,4 +7,7 @@ package like.rpc.cn.core.exception;
  */
 public class RpcException extends RuntimeException {
 
+    public RpcException(final String s) {
+        super(s);
+    }
 }

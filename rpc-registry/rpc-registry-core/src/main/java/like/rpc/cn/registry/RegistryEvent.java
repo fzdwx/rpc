@@ -1,6 +1,7 @@
 package like.rpc.cn.registry;
 
 import like.rpc.cn.core.util.KV;
+import lombok.Getter;
 
 /**
  * 注册事件
@@ -9,13 +10,17 @@ import like.rpc.cn.core.util.KV;
  */
 public class RegistryEvent {
 
-    private KV<String, String> preKv;
-    private KV<String, String> kv;
+    @Getter
+    private String host;
+    @Getter
+    private String ip;
+
+    @Getter
     private RegistryEventType registryEventType = RegistryEventType.UNRECOGNIZED;
 
-    private RegistryEvent(final KV<String, String> preKv, final KV<String, String> kv, final RegistryEventType registryEventType) {
-        this.preKv = preKv;
-        this.kv = kv;
+    private RegistryEvent(final String host, final String  ip, final RegistryEventType registryEventType) {
+        this.host = host;
+        this.ip = ip;
         this.registryEventType = registryEventType;
     }
 
@@ -24,21 +29,21 @@ public class RegistryEvent {
 
     // ===================== 构建方法
 
-    public static RegistryEvent of(KV<String, String> preKv, KV<String, String> kv, RegistryEventType registryEventType) {
-        return new RegistryEvent(preKv, kv, registryEventType);
+    public static RegistryEvent of(final String host, final String  ip, RegistryEventType registryEventType) {
+        return new RegistryEvent(host, ip, registryEventType);
     }
 
     public static RegistryEvent of() {
         return new RegistryEvent();
     }
 
-    public RegistryEvent preKv(KV<String, String> preKv) {
-        this.preKv = preKv;
+    public RegistryEvent preKv(final String host) {
+        this.host = host;
         return this;
     }
 
-    public RegistryEvent kv(KV<String, String> kv) {
-        this.kv = kv;
+    public RegistryEvent kv( final String  ip) {
+        this.ip = ip;
         return this;
     }
 
