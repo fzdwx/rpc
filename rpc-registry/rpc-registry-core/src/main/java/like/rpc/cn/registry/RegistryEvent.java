@@ -1,6 +1,6 @@
 package like.rpc.cn.registry;
 
-import like.rpc.cn.core.util.KV;
+import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -8,42 +8,47 @@ import lombok.Getter;
  * @author <a href="mailto:likelovec@gmail.com">like</a>
  * @date 2021/12/5 21:10
  */
+@Data
 public class RegistryEvent {
 
-    @Getter
+    private String serverName;
     private String host;
-    @Getter
-    private String ip;
+    private int port;
 
     @Getter
     private RegistryEventType registryEventType = RegistryEventType.UNRECOGNIZED;
 
-    private RegistryEvent(final String host, final String  ip, final RegistryEventType registryEventType) {
+    private RegistryEvent(final String host, final int port, final String serverName, final RegistryEventType registryEventType) {
         this.host = host;
-        this.ip = ip;
+        this.port = port;
+        this.serverName = serverName;
         this.registryEventType = registryEventType;
     }
 
-    public RegistryEvent() {
+    private RegistryEvent() {
     }
 
     // ===================== 构建方法
 
-    public static RegistryEvent of(final String host, final String  ip, RegistryEventType registryEventType) {
-        return new RegistryEvent(host, ip, registryEventType);
+    public static RegistryEvent of(final String host, final int port, final String serverName, RegistryEventType registryEventType) {
+        return new RegistryEvent(host, port, serverName, registryEventType);
     }
 
     public static RegistryEvent of() {
         return new RegistryEvent();
     }
 
-    public RegistryEvent preKv(final String host) {
+    public RegistryEvent serverName(final String serverName) {
+        this.serverName = serverName;
+        return this;
+    }
+    public RegistryEvent host(final String host) {
         this.host = host;
         return this;
     }
 
-    public RegistryEvent kv( final String  ip) {
-        this.ip = ip;
+    public RegistryEvent port(final int port) {
+        this.port = port;
         return this;
     }
 

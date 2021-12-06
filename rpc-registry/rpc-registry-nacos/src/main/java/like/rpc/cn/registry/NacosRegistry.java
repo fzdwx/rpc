@@ -1,17 +1,13 @@
 package like.rpc.cn.registry;
 
-import cn.hutool.http.HttpUtil;
-import cn.hutool.http.server.SimpleServer;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
-import com.alibaba.nacos.api.naming.NamingMaintainService;
 import com.alibaba.nacos.api.naming.NamingService;
-import com.alibaba.nacos.api.naming.listener.Event;
-import com.alibaba.nacos.api.naming.listener.EventListener;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.api.naming.pojo.Service;
 import like.rpc.cn.core.util.EndPoint;
 import like.rpc.cn.core.util.IpUtil;
 import reactor.core.publisher.Flux;
@@ -25,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 注册中心 nacos 实现
- *
  * @author <a href="mailto:likelovec@gmail.com">like</a>
  * @date 2021/12/5 21:27
  */
@@ -58,23 +53,17 @@ public class NacosRegistry implements Registry {
     }
 
     public static void main(String[] args) {
-        final SimpleServer server = HttpUtil.createServer(8000);
-        server.start();
         try {
-            final NacosRegistry registry = new NacosRegistry("http://192.168.1.228:8848", "test.yaml", "public");
+            final NacosRegistry registry = new NacosRegistry("http://localhost:8848", "test.yaml", "public");
             registry.register("com.some.package.IHelloService", 8000).subscribe();
             registry.register("com.some.package.IMain", 8000).subscribe();
-            registry.watch(new RegistryEventCallBack() {
-                @Override
-                public void execute(final RegistryEvent event) {
-                    System.out.println(event);
+            new Thread(() -> {
+                try {
+                    TimeUnit.SECONDS.sleep(100000);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }).subscribe();
-            try {
-                TimeUnit.SECONDS.sleep(2);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            }).start();
         } catch (NacosException e) {
             e.printStackTrace();
         }
@@ -105,19 +94,29 @@ public class NacosRegistry implements Registry {
 
     @Override
     public Mono<Void> watch(final RegistryEventCallBack callBack) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            for (final String serviceName : serviceNames) {
-                try {
-                    namingService.subscribe(serviceName, e -> {
-                        final NamingEvent event = (NamingEvent) e;
-                        System.out.println(event);
-                    });
-                } catch (NacosException e) {
-                    e.printStackTrace();
+        return Mono.defer(() -> {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                for (final String serviceName : serviceNames) {
+                    try {
+                        namingService.subscribe(serviceName, e -> {
+                            final NamingEvent event = ( NamingEvent ) e;
+                            for (Instance instance : event.getInstances()) {
+                                final JSONObject instanceJson = JSONUtil.parseObj(instance);
+                                final RegistryEvent registryEvent = RegistryEvent.of().host(instanceJson.getStr("ip")).port(instance.getPort()).serverName(instanceJson.getStr("serviceName").split("@@")[1]);
+                                if (instance.isHealthy()) {
+                                    callBack.execute(registryEvent.evenType(RegistryEventType.PUT));
+                                } else {
+                                    callBack.execute(registryEvent.evenType(RegistryEventType.DELETE));
+                                }
+                            }
+                        });
+                    } catch (NacosException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
+            });
+            return Mono.empty();
         });
-        return Mono.empty();
     }
 
     @Override
