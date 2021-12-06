@@ -16,6 +16,8 @@
         <nacos-client.version>2.0.3</nacos-client.version>
         <slf4j-api.version>2.0.0-alpha1</slf4j-api.version>
         <logback.version>1.2.7</logback.version>
+        <protostuff.version>1.5.2</protostuff.version>
+        <objenesis.version>2.6</objenesis.version>
     </properties>
 
     <dependencyManagement>
@@ -40,6 +42,11 @@
                 <artifactId>rpc-registry-nacos</artifactId>
                 <version>${rpc.version}</version>
             </dependency>
+            <dependency>
+                <groupId>like.rpc.cn</groupId>
+                <artifactId>rpc-protocol</artifactId>
+                <version>${rpc.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>io.projectreactor</groupId>
@@ -47,6 +54,22 @@
                 <version>2020.0.13</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.protostuff</groupId>
+                <artifactId>protostuff-core</artifactId>
+                <version>${protostuff.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.protostuff</groupId>
+                <artifactId>protostuff-runtime</artifactId>
+                <version>${protostuff.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.objenesis</groupId>
+                <artifactId>objenesis</artifactId>
+                <version>${objenesis.version}</version>
             </dependency>
 
             <dependency>
