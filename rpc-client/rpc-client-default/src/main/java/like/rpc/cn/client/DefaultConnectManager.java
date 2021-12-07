@@ -1,6 +1,7 @@
 package like.rpc.cn.client;
 
-import cn.hutool.core.util.ServiceLoaderUtil;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -8,7 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import like.rpc.cn.core.Constants;
 import like.rpc.cn.core.RpcConfigLoader;
-import like.rpc.cn.core.loadbalance.LoadBalance;
+import like.rpc.cn.core.loadbalance.RandomLoadBalance;
 import like.rpc.cn.core.util.EndPoint;
 import like.rpc.cn.registry.Registry;
 import like.rpc.cn.registry.RegistryEvent;
@@ -18,11 +19,13 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -36,6 +39,7 @@ public class DefaultConnectManager implements ConnectManager, RegistryEventCallB
     private final EventLoopGroup eventLoopGroup = new NioEventLoopGroup(4);
     private final AtomicInteger roundRobin = new AtomicInteger(0);
     private final Map<String, List<ChannelWrapper>> channelsByService = new LinkedHashMap<>();
+    private final Set<String> serverName = new HashSet<>();
 
     public DefaultConnectManager(final Registry registry) {
         this.registry = registry;
@@ -45,36 +49,12 @@ public class DefaultConnectManager implements ConnectManager, RegistryEventCallB
     @Override
     public Mono<Channel> getChannel(final String serviceName) {
         return Mono.create(sink -> {
-            int select = 0;
-            try {
-                int size = channelsByService.get(serviceName).size();
+            int selected = fetchService(serviceName);
 
-                if (!channelsByService.containsKey(serviceName)) {
-                    List<ChannelWrapper> channels = new ArrayList<>();
-                    registry.find(serviceName).subscribe(endPoint -> {
-                        channels.add(this.connect(endPoint));
-                    });
-                    channelsByService.put(serviceName, channels);
-                }
-                select = ServiceLoaderUtil.loadFirstAvailable(LoadBalance.class)
-                        .select(Map.of(Constants.loadBalance, RpcConfigLoader.get(Constants.loadBalance)), size);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            final ChannelWrapper channelWrapper = channelsByService.get(serviceName).get(select);
+            final ChannelWrapper channelWrapper = channelsByService.get(serviceName).get(selected);
 
             sink.success(channelWrapper.getChannel());
         });
-    }
-
-    @SneakyThrows
-    private ChannelWrapper doConnect(final String host, final int port) {
-        Bootstrap b = new Bootstrap()
-                .group(eventLoopGroup)
-                .channel(NioSocketChannel.class)
-                .handler(new RpcClientInitializer());
-        Channel channel = b.connect(host, port).sync().channel();
-        return new ChannelWrapper(new EndPoint(host, port), channel);
     }
 
     @Override
@@ -93,15 +73,52 @@ public class DefaultConnectManager implements ConnectManager, RegistryEventCallB
         }
         if (event.getRegistryEventType() == RegistryEventType.PUT) {
             try {
-                channelsByService.get(serviceName).add(doConnect(host,port));
+                add(channelsByService.get(serviceName), doConnect(serviceName, host, port));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private ChannelWrapper connect(final EndPoint endPoint) {
-        return doConnect(endPoint.getHost(), endPoint.getPort());
+    private ChannelWrapper connect(final String serviceName, final EndPoint endPoint) {
+        return doConnect(serviceName, endPoint.getHost(), endPoint.getPort());
+    }
+
+    private int fetchService(final String serviceName) {
+        if (!channelsByService.containsKey(serviceName) || channelsByService.get(serviceName).size() < 1) {
+            List<ChannelWrapper> channels = new LinkedList<>();
+
+            if (registry.find(serviceName).subscribe(endPoint -> add(channels, this.connect(serviceName, endPoint))).isDisposed()) {
+                channelsByService.put(serviceName, channels);
+                return doSelect(channelsByService.get(serviceName).size());
+            }
+        }
+        return doSelect(channelsByService.get(serviceName).size());
+    }
+
+    private int doSelect(final int size) {
+        // ServiceLoaderUtil.loadFirstAvailable(LoadBalance.class) todo 扩展
+        return new RandomLoadBalance().select(MapUtil.of(Constants.loadBalance, RpcConfigLoader.get(Constants.loadBalance)), size);
+    }
+
+    private void add(final List<ChannelWrapper> channels, final ChannelWrapper connect) {
+        if (ObjectUtil.isNull(connect)) return;
+        channels.add(connect);
+    }
+
+    @SneakyThrows
+    private ChannelWrapper doConnect(final String serviceName, final String host, final int port) {
+        if (!serverName.add(serviceName.concat(host).concat(port + ""))) {
+
+            log.info(" rpc add connect :{} {}:{}", serviceName, host, port);
+
+            Bootstrap b = new Bootstrap()
+                    .group(eventLoopGroup)
+                    .channel(NioSocketChannel.class)
+                    .handler(new RpcClientInitializer());
+            Channel channel = b.connect(host, port).sync().channel();
+            return new ChannelWrapper(new EndPoint(host, port), channel);
+        } else return null;
     }
 
     private static class ChannelWrapper {

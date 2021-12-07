@@ -23,6 +23,7 @@ public class RpcDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) throws Exception {
+        System.out.println("!23");
         if (in.readableBytes() < 4) {
             return;
         }

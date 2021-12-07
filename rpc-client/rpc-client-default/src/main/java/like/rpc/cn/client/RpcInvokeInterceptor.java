@@ -20,7 +20,6 @@ public class RpcInvokeInterceptor {
     @RuntimeType
     public Object intercept(@AllArguments Object[] args, @Origin Method method) throws Exception {
         String name = method.getDeclaringClass().getName();
-        System.out.println(name);
         // create rpc request
         RpcRequest request = new RpcRequest();
         request.setRequestId(UUID.randomUUID().toString());

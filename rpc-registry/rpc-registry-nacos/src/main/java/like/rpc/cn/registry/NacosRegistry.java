@@ -91,10 +91,12 @@ public class NacosRegistry implements Registry {
     @SneakyThrows
     @Override
     public Flux<EndPoint> find(final String serviceName) {
-        return Flux.just(namingService.selectInstances(serviceName, true).toArray(Instance[]::new))
-                .handle((instance, synchronousSink) -> {
-                    synchronousSink.next(new EndPoint(instance.getIp(), instance.getPort()));
-                });
+        return Flux.fromStream(namingService.selectInstances(serviceName, true).stream().map(this::buildEndPoint));
+
+    }
+
+    private EndPoint buildEndPoint(final Instance instance) {
+        return new EndPoint(instance.getIp(), instance.getPort());
     }
 
     @Override

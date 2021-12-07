@@ -13,17 +13,16 @@ import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
 
 /**
  * 默认的rpc客户端实现
- *
  * @author <a href="mailto:likelovec@gmail.com">韦朕</a>
  * @date 2021/12/6 19:26
  */
-public class DefaultRpcClient implements  RpcClient{
+public class DefaultRpcClient implements RpcClient {
 
     private final Registry registry;
     private final Map<String, Object> proxyByClass = new LinkedHashMap<>();
     private final DefaultConnectManager defaultConnectManager;
 
-    public DefaultRpcClient(Registry registry){
+    public DefaultRpcClient(Registry registry) {
         this.registry = registry;
         this.defaultConnectManager = new DefaultConnectManager(registry);
         //this.registry.watch();
@@ -44,6 +43,6 @@ public class DefaultRpcClient implements  RpcClient{
 
             proxyByClass.put(clazz.getName(), proxy);
         }
-        return null;
+        return Mono.just(( T ) proxyByClass.get(clazz.getName()));
     }
 }

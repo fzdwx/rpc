@@ -14,7 +14,7 @@ public class RandomLoadBalance implements LoadBalance {
     private final Random random = new Random();
 
     @Override
-    public int select(final Map<String, String> config, final int amount) throws Exception {
+    public int select(final Map<String, String> config, final int amount){
         if (amount <= 0) {
             throw ExceptionFactory.rpc("RandomLoadBalance: no available items to select");
         } else if (amount == 1) {

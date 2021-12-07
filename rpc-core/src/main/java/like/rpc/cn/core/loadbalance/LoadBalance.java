@@ -16,5 +16,5 @@ public interface LoadBalance {
      * @return int
      * @throws Exception 异常
      */
-    int select(Map<String, String> config, int amount) throws Exception;
+    int select(Map<String, String> config, int amount);
 }
