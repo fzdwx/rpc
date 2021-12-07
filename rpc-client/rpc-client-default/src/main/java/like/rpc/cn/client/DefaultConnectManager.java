@@ -2,6 +2,7 @@ package like.rpc.cn.client;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.log.LogFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -110,7 +111,7 @@ public class DefaultConnectManager implements ConnectManager, RegistryEventCallB
     private ChannelWrapper doConnect(final String serviceName, final String host, final int port) {
         if (!serverName.add(serviceName.concat(host).concat(port + ""))) {
 
-            log.info(" rpc add connect :{} {}:{}", serviceName, host, port);
+            LogFactory.get().info(" rpc add connect :{} {}:{}", serviceName, host, port);
 
             Bootstrap b = new Bootstrap()
                     .group(eventLoopGroup)
