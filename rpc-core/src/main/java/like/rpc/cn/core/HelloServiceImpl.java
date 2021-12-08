@@ -7,6 +7,7 @@ package like.rpc.cn.core;
 public class HelloServiceImpl {
 
     public String hello(String name) {
+        final int i = 10 / 0;
         return "Hello " + name;
     }
 }

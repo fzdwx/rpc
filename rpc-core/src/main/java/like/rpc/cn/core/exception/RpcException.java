@@ -10,4 +10,8 @@ public class RpcException extends RuntimeException {
     public RpcException(final String s) {
         super(s);
     }
+
+    public RpcException(final Throwable error) {
+        super(error);
+    }
 }

@@ -10,4 +10,8 @@ public class ExceptionFactory {
     public static RpcException rpc(final String s) {
         return new RpcException(s);
     }
+
+    public static RpcException rpc(final Throwable error) {
+        return new RpcException(error);
+    }
 }

@@ -13,17 +13,16 @@ import java.util.List;
  * @author <a href="mailto:likelovec@gmail.com">韦朕</a>
  * @date 2021/12/6 18:23
  */
-public class RpcDecoder extends ByteToMessageDecoder {
+public class RpcDecoder<T> extends ByteToMessageDecoder {
 
-    private Class<?> clazz;
+    private Class<T> clazz;
 
-    public RpcDecoder(Class<?> clazz) {
+    public RpcDecoder(Class<T> clazz) {
         this.clazz = clazz;
     }
 
     @Override
     protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) throws Exception {
-        System.out.println("!23");
         if (in.readableBytes() < 4) {
             return;
         }
@@ -42,7 +41,7 @@ public class RpcDecoder extends ByteToMessageDecoder {
         byte[] data = new byte[dataLength];
         in.readBytes(data);
 
-        Object obj = SerializationUtil.deserialize(data, clazz);
+        T obj = SerializationUtil.deserialize(data, clazz);
         out.add(obj);
     }
 }

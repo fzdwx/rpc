@@ -1,6 +1,8 @@
 package like.rpc.cn.client.support;
 
 
+import cn.hutool.core.util.ObjectUtil;
+import like.rpc.cn.core.exception.ExceptionFactory;
 import like.rpc.cn.protocol.model.rpc.RpcResponse;
 
 import java.util.concurrent.CountDownLatch;
@@ -42,6 +44,11 @@ public class RpcFuture implements Future<Object> {
     @Override
     public Object get(long timeout, TimeUnit unit) throws InterruptedException {
         boolean b = latch.await(timeout, unit);
+
+        if (ObjectUtil.isNotNull(response.getError())) {
+            throw ExceptionFactory.rpc(response.getError());
+        }
+
         return response.getResult();
     }
 

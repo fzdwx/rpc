@@ -5,7 +5,6 @@ import lombok.experimental.Accessors;
 
 /**
  * rpc响应
- *
  * @author <a href="mailto:likelovec@gmail.com">韦朕</a>
  * @date 2021/12/06 18:32:45
  */
@@ -20,7 +19,7 @@ public class RpcResponse {
     /**
      * 错误
      */
-    private String error;
+    private Throwable error;
     /**
      * 结果
      */

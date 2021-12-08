@@ -23,7 +23,7 @@ public class RpcServerInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel socketChannel) {
         ChannelPipeline pipeline = socketChannel.pipeline();
         pipeline.addLast(new LengthFieldBasedFrameDecoder(65536,0,4,0,0));
-        pipeline.addLast(new RpcDecoder(RpcRequest.class));
+        pipeline.addLast(new RpcDecoder<>(RpcRequest.class));
         pipeline.addLast(new RpcEncoder(RpcResponse.class));
         pipeline.addLast(new RpcServerHandler(handlerMap));
     }

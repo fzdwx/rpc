@@ -24,18 +24,28 @@ public class RpcServer {
         this.registry = registry;
     }
 
-    public RpcServer exposeService(Class<?> clazz, Object handler) throws Exception {
+    /**
+     * 暴露接口
+     * @param clazz   需要暴露的类
+     * @param handler 暴露的类的实例
+     * @return {@link RpcServer} this for fluent
+     */
+    public RpcServer exposeService(Class<?> clazz, Object handler) {
         handlerMap.put(clazz.getName(), handler);
         return this;
     }
 
+    /**
+     * 设置端口
+     * @param port port
+     * @return {@link RpcServer}  this for fluent
+     */
     public RpcServer port(int port) {
         this.port = port;
         return this;
     }
 
-    public void run() throws Exception {
-
+    public void run() {
         Executors.newSingleThreadExecutor().submit(() -> {
             EventLoopGroup bossGroup = new NioEventLoopGroup();
             EventLoopGroup workerGroup = new NioEventLoopGroup();
