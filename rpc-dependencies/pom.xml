@@ -54,17 +54,6 @@
                 <version>${rpc.version}</version>
             </dependency>
             <dependency>
-                <groupId>like.rpc.cn</groupId>
-                <artifactId>rpc-client-core</artifactId>
-                <version>${rpc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>like.rpc.cn</groupId>
-                <artifactId>rpc-client-default</artifactId>
-                <version>${rpc.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>io.projectreactor</groupId>
                 <artifactId>reactor-bom</artifactId>
                 <version>2020.0.13</version>

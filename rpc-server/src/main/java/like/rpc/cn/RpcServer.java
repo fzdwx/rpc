@@ -55,7 +55,7 @@ public class RpcServer {
 
             for (String className : handlerMap.keySet()) {
                 try {
-                    registry.register(className, port).subscribe();
+                    registry.register(className, port);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

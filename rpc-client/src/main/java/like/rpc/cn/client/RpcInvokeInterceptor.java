@@ -1,5 +1,9 @@
 package like.rpc.cn.client;
 
+import io.netty.channel.Channel;
+import like.rpc.cn.client.context.RpcRequestHolder;
+import like.rpc.cn.client.core.ConnectManager;
+import like.rpc.cn.client.support.RpcFuture;
 import like.rpc.cn.protocol.model.rpc.RpcRequest;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
 import net.bytebuddy.implementation.bind.annotation.Origin;
@@ -18,7 +22,7 @@ public class RpcInvokeInterceptor {
     }
 
     @RuntimeType
-    public Object intercept(@AllArguments Object[] args, @Origin Method method) throws Exception {
+    public Object intercept(@AllArguments Object[] args, @Origin Method method) {
         String name = method.getDeclaringClass().getName();
         // create rpc request
         RpcRequest request = new RpcRequest();
@@ -27,22 +31,25 @@ public class RpcInvokeInterceptor {
         request.setMethodName(method.getName());
         request.setParameterTypes(method.getParameterTypes());
         request.setParameters(args);
-        // get a connect from connect manager
+
         AtomicReference<Object> result = new AtomicReference<>();
-        connectManager.getChannel(method.getDeclaringClass().getName()).subscribe(channel -> {
-            // send the rpc request via the connect
 
-            RpcFuture future = new RpcFuture();
-            RpcRequestHolder.put(request.getRequestId(), future);
+        // get a connect from connect manager
+        final Channel channel = connectManager.getChannel(method.getDeclaringClass().getName());
 
-            channel.writeAndFlush(request);
+        // send the rpc request via to connect
 
-            try {
-                result.set(future.get());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        RpcFuture future = new RpcFuture();
+        RpcRequestHolder.put(request.getRequestId(), future);
+
+        channel.writeAndFlush(request);
+
+        try {
+            result.set(future.get());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return result.get();
     }
 }

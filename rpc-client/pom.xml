@@ -8,13 +8,45 @@
     <artifactId>rpc-client</artifactId>
     <packaging>pom</packaging>
     <version>0.1</version>
-    <modules>
-        <module>rpc-client-core</module>
-        <module>rpc-client-default</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>like.cn.rpc</groupId>
+            <artifactId>rpc-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>like.rpc.cn</groupId>
+            <artifactId>rpc-registry-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>like.rpc.cn</groupId>
+            <artifactId>rpc-protocol</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>like.rpc.cn</groupId>
+            <artifactId>rpc-registry-nacos</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>like.rpc.cn</groupId>
+                <artifactId>rpc-dependencies</artifactId>
+                <version>0.1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
