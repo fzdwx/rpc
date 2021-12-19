@@ -5,21 +5,29 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>like.rpc.cn</groupId>
-    <artifactId>rpc-server</artifactId>
+    <artifactId>rpc-spring</artifactId>
     <version>0.1</version>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
         <dependency>
             <groupId>like.rpc.cn</groupId>
             <artifactId>rpc-core</artifactId>
         </dependency>
         <dependency>
             <groupId>like.rpc.cn</groupId>
-            <artifactId>rpc-registry-nacos</artifactId>
+            <artifactId>rpc-server</artifactId>
         </dependency>
         <dependency>
             <groupId>like.rpc.cn</groupId>
-            <artifactId>rpc-protocol</artifactId>
+            <artifactId>rpc-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
         </dependency>
     </dependencies>
 

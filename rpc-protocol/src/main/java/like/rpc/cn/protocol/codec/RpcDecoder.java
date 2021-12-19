@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class RpcDecoder<T> extends ByteToMessageDecoder {
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
 
     public RpcDecoder(Class<T> clazz) {
         this.clazz = clazz;

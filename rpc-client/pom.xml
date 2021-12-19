@@ -16,7 +16,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>like.cn.rpc</groupId>
+            <groupId>like.rpc.cn</groupId>
             <artifactId>rpc-core</artifactId>
         </dependency>
         <dependency>

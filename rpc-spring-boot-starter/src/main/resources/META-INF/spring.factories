@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  like.rpc.cn.springboot.config.RpcAutoConfiguration

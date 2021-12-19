@@ -19,13 +19,19 @@
         <protostuff.version>1.5.2</protostuff.version>
         <objenesis.version>2.6</objenesis.version>
         <byte-buddy.version>1.7.9</byte-buddy.version>
+        <spring-boot-dependencies>2.5.7</spring-boot-dependencies>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>like.cn.rpc</groupId>
+                <groupId>like.rpc.cn</groupId>
                 <artifactId>rpc-core</artifactId>
+                <version>${rpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>like.rpc.cn</groupId>
+                <artifactId>rpc-spring</artifactId>
                 <version>${rpc.version}</version>
             </dependency>
             <dependency>
@@ -51,6 +57,11 @@
             <dependency>
                 <groupId>like.rpc.cn</groupId>
                 <artifactId>rpc-client</artifactId>
+                <version>${rpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>like.rpc.cn</groupId>
+                <artifactId>rpc-server</artifactId>
                 <version>${rpc.version}</version>
             </dependency>
             <dependency>
@@ -118,6 +129,14 @@
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
                 <version>${nacos-client.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
