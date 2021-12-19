@@ -1,0 +1,4 @@
+rpc.registry.address=http://127.0.0.1:2379
+
+rpc.server.enable=true
+rpc.annotation.package=like.rpc.cn.xxx
